@@ -1,7 +1,7 @@
 import pytest
-from lexer import lexer
-from get_input import get_input
-from data_structures import token, token_type, location
+from .lexer import lexer
+from .get_input import get_input
+from .data_structures import token, token_type, location
 
 class string_buffer(get_input):
     def __init__(self, string):
@@ -143,7 +143,7 @@ def test_build_quote():
     assert t.location == 12
     assert t.value == ";"
     t = l.build_token()
-    assert t.token_type == token_type.QUOTE
+    assert t.token_type == token_type.STRING
     assert t.location == 13
     assert t.value == ";aujsyhdgasu#y"
 
@@ -215,7 +215,7 @@ def test_quote_escape():
     assert t.location == 12
     assert t.value == ";"
     t = l.build_token()
-    assert t.token_type == token_type.QUOTE
+    assert t.token_type == token_type.STRING
     assert t.location == 13
     assert t.value == ";aujsyh\\\"dgasu#y"
     

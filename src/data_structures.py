@@ -4,7 +4,7 @@ class token_type(Enum):
     IF = auto()
     WHILE = auto()
     ELSE = auto()
-    ELIF = auto()
+    #ELIF = auto()
     DEF = auto()
     RETURN = auto()
 #    PRINT = auto()
@@ -24,7 +24,7 @@ class token_type(Enum):
     OR_OPERATOR = auto()
     AND_OPERATOR = auto()
     SEMICOLON = auto()
-    QUOTE = auto()
+    STRING = auto()
     OPEN_BRACKET = auto()
     CLOSE_BRACKER = auto()
     OPEN_BLOCK = auto()
@@ -32,6 +32,7 @@ class token_type(Enum):
     IDENTIFIER = auto()
     CONST = auto()
     EOT = auto()
+    COMMA = auto()
 
 class location:
     def __init__(self, line, char_number):

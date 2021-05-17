@@ -1,6 +1,6 @@
-from get_input import get_input
-from exceptions import unexpected_character_exception, parse_exception, missing_character_exception
-from data_structures import token, token_type, location
+from .get_input import get_input
+from .exceptions import unexpected_character_exception, parse_exception, missing_character_exception
+from .data_structures import token, token_type, location
 import string
 
 class lexer:
@@ -22,6 +22,7 @@ class lexer:
             "}" : token_type.CLOSE_BLOCK,
             "*" : token_type.MUL_OPERATOR,
             "/" : token_type.MUL_OPERATOR,
+            "," : token_type.COMMA
         }
 
         self._simple_tokens_confirm = {
@@ -45,7 +46,7 @@ class lexer:
             "if" : token_type.IF,
             "while" : token_type.WHILE,
             "else" : token_type.ELSE,
-            "elif" : token_type.ELIF,
+#            "elif" : token_type.ELIF,
             "return" : token_type.RETURN,
 #            "print" : token_type.PRINT,
 #            "marker_up" : token_type.MARKER_UP,
@@ -80,7 +81,7 @@ class lexer:
             return token(token_type.EOT, "\0", self.location)
         #build quote
         if self.current_char == "\"":
-            return self._build_quote()
+            return self._build_string()
         #build simple token
         elif self.current_char in self._simple_tokens:
             return token(self._simple_tokens[self.current_char], self.current_char, self.location)
@@ -110,7 +111,7 @@ class lexer:
         else:
             raise unexpected_character_exception(f"Unknown token at: {self.location}")
 
-    def _build_quote(self):
+    def _build_string(self):
         value = ""
         self._get_next_char()
         if self.current_char != "\"":
@@ -121,7 +122,7 @@ class lexer:
                 self._get_next_char()
             value += self.current_char
             self._get_next_char()
-        return token(token_type.QUOTE, value, self.location)
+        return token(token_type.STRING, value, self.location)
 
     def _build_digit(self):
         value = ""
