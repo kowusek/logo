@@ -1,0 +1,6 @@
+src/__pycache__
+src/draw/__pycache__
+.vscode
+.pytest_cache
+src/draw
+src/unused
