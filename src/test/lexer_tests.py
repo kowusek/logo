@@ -1,5 +1,6 @@
 import pytest
 import sys
+sys.path.append('./src/')
 sys.path.append('.')
 from src.lexer import lexer
 from src.get_input import get_input

@@ -4,3 +4,4 @@ src/draw/__pycache__
 .pytest_cache
 src/draw
 src/unused
+src/test/__pycache__
