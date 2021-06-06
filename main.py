@@ -11,7 +11,7 @@ if __name__ == "__main__":
     p = parser(l)
     program = p.parse_program()
     m = marker()
-    v = interpreter_visitor()
+    v = interpreter_visitor(m)
     program.accept(v)
     w = window(m.lines, m.angle)
     w.render()

@@ -9,7 +9,6 @@ from src.get_input import get_input
 from src.data_structures import token, token_type, location
 from src.parser_types import *
 from src.visitor import interpreter_visitor
-from src.draw.window_renderer import *
 
 class string_buffer(get_input):
     def __init__(self, string):
@@ -191,12 +190,9 @@ def test_logical_expressions():
     assert v.current_context.variables['z'] == True
 
 def test_snow_flake():
-    t = TurtlePaths()
-    r = WindowRenderer(t)
     s = string_buffer('def snowflake(lengthSide,levels){if(levels==0){forward(lengthSide);return();}lengthSide=lengthSide/3.0;snowflake(lengthSide,levels-1);left(60);snowflake(lengthSide,levels-1);right(120);snowflake(lengthSide,levels-1);left(60);snowflake(lengthSide,levels-1);}snowflake(50,5);')
     l = lexer(s)
     p = parser(l)
     program = p.parse_program() 
-    v = interpreter_visitor(t)
+    v = interpreter_visitor()
     v.visit_program(program)
-    #r.render()
