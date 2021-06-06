@@ -47,7 +47,7 @@ class lexer:
             "while" : token_type.WHILE,
             "else" : token_type.ELSE,
 #            "elif" : token_type.ELIF,
-            "return" : token_type.RETURN,
+#            "return" : token_type.RETURN,
 #            "print" : token_type.PRINT,
 #            "marker_up" : token_type.MARKER_UP,
 #            "marker_down" : token_type.MARKER_DOWN,

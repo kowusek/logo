@@ -6,7 +6,7 @@ class token_type(Enum):
     ELSE = auto()
     #ELIF = auto()
     DEF = auto()
-    RETURN = auto()
+#    RETURN = auto()
 #    PRINT = auto()
 #    MARKER_UP = auto()
 #    MARKER_DOWN = auto()

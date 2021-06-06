@@ -1,25 +1,26 @@
-program  =  { statement | definition }; #
-definition = "def" identifier, parameters, block; #
+program  =  { statement | definition };
+definition = "def" identifier, parameters, block;
 parameters = "(", [ identifier, { ",", identifier } ], ")";
 statement = if_statement | while_statement | function | assignment;
 
 
-if_statement = "if", "(", logic_expression, ")", block, [ "else", block ]; #
-while_statement = "while", "(", logic_expression, ")", block; #
-block = "{", { statement }, "}"; #
-assignment = identifier, "=", expression; #
+if_statement = "if", "(", logic_expression, ")", block, [ "else", block ];
+while_statement = "while", "(", logic_expression, ")", block;
+block = "{", { statement }, "}";
+assignment = identifier, "=", logic_expression;
 
 
-logic_expression = condition, { "||", condition }; #
-condition = relation, { "&&", relation } | "(", logic_expression, ")"; #
-relation = math_expression, [ comp_sign, math_expression ]; #
-math_expression = factor, { add_sign, factor }; #
-factor = value, { mult_sign, value } | "(" math_expression ")"; #
+logic_expression = condition, { "||", condition };
+condition = relation, { "&&", relation };
+relation = math_expression, [ comp_sign, math_expression ];
+math_expression = factor, { add_sign, factor };
+factor = logic_factor, { mult_sign, logic_factor };
+logic_factor = value | "(" logic_expression ")";
 value = [ "!" | add_sign ], ( identifier | function | number | string );
 
 
-function = identifier, function_arguments; #
-function_arguments = "(" [ value, { ",", value } ], ")"; #
+function = identifier, function_arguments;
+function_arguments = "(" [ logic_expression, { ",", logic_expression } ], ")";
 
 
 add_sign = "+" | "-";
