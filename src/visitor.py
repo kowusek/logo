@@ -156,8 +156,8 @@ class interpreter_visitor(visitor):
             try:
                 special_function[element.identifier](self, self.canvas, *values)
             except Exception as e:
-                print(e)
-                return
+                logging.error(f"{e} at: {element.argument_list[0].location}")
+                raise Exception
         else:
             definition = self.current_context.get_definition(element.identifier)
             self._function_execute(definition, values, self.current_context.get_root_context())

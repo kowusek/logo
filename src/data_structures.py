@@ -26,7 +26,10 @@ class token_type(Enum):
 class location:
     def __init__(self, line, char_number):
         self.line = line
-        self.char_number = char_number 
+        self.char_number = char_number
+    
+    def __str__(self) -> str:
+        return f'line: {self.line}, position: {self.char_number}'
 
 class token:
     def __init__(self, token_type, value, location):
