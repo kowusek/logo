@@ -54,6 +54,8 @@ class interpreter_visitor(visitor):
             if self.is_return:
                 self.is_return = False
                 return
+            else:
+                self.return_val = []
             statement.accept(self)
 
     def visit_assignment(self, element: assignment) -> None:
