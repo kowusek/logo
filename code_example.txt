@@ -12,4 +12,4 @@ def snowflake(lengthSide,levels) {
     left(60);
     snowflake(lengthSide,levels-1);
 }
-snowflake(50,5);
+snowflake(400,5);

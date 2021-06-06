@@ -2,16 +2,17 @@ from __future__ import annotations
 from src.context import context, root_context
 from src.parser_types import *
 from src.special_functions import *
+from src.marker import marker
 import logging
 
 class interpreter_visitor(visitor):
-    def __init__(self, canv: TurtlePaths = None):
+    def __init__(self, mark: marker = None):
         self.root_context = root_context()
         self.current_context = self.root_context
         self.return_val = []
         self.return_flag = False #do i need this
         self.is_return = False
-        self.canvas = canv
+        self.marker = mark
         logging.basicConfig(filename=f"./interpreter.log", level=logging.DEBUG)
         
     def visit_program(self, element: program) -> None:
@@ -156,7 +157,7 @@ class interpreter_visitor(visitor):
         self.return_val = []
         if element.identifier in special_function:
             try:
-                special_function[element.identifier](self, self.canvas, *values)
+                special_function[element.identifier](self, self.marker, *values)
             except Exception as e:
                 logging.error(f"{e} at: {element.argument_list[0].location}")
                 raise Exception
