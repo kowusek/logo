@@ -7,7 +7,6 @@ from src.parser import parser
 from src.get_input import get_input
 from src.data_structures import token, token_type, location
 from src.parser_types import *
-from src.exceptions import syntax_exception
 
 class string_buffer(get_input):
     def __init__(self, string):

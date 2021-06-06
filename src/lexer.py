@@ -1,7 +1,7 @@
-from .get_input import get_input
-from .exceptions import unexpected_character_exception, parse_exception, missing_character_exception
-from .data_structures import token, token_type, location
+from src.get_input import get_input
+from src.data_structures import token, token_type, location
 import string
+import logging
 
 class lexer:
 
@@ -11,6 +11,8 @@ class lexer:
         self.is_comment = False
         self.next_char = self.input.get_char()
         self.location = None
+        logging.basicConfig(filename=f"./interpreter.log", level=logging.DEBUG)
+
 
         self._simple_tokens = {
             "+" : token_type.ADD_OPERATOR,
@@ -58,12 +60,7 @@ class lexer:
     def build_token(self):
         self._get_next_char()
         #ommit whitespace and comment
-        while self.current_char and (self.current_char in string.whitespace or self.is_comment or self.current_char == "#"):
-            if self.current_char == "#":
-                self.is_comment = True
-            if self.current_char == "\n":
-                self.is_comment = False
-            self._get_next_char()
+        self._omit_white_space()
         #detect end of file
         self.location = self.input.get_location()
         if self.current_char is None:
@@ -89,7 +86,8 @@ class lexer:
                 self._get_next_char()
                 return token(self._two_char_tokens[token_temp], token_temp, self.location)
             else:
-                raise unexpected_character_exception(f"Unexpected token {token_temp} at: {self.location}")
+                logging.error(f"Unexpected token at: {self.location}")
+                raise Exception
         #build digit
         elif self.current_char.isdigit():
             return self._build_digit()
@@ -98,7 +96,16 @@ class lexer:
             return self._build_identifier()
         #something's wrong
         else:
-            raise unexpected_character_exception(f"Unknown token at: {self.location}")
+            logging.error(f"Unknown token at: {self.location}")
+            raise Exception
+
+    def _omit_white_space(self):
+        while self.current_char and (self.current_char in string.whitespace or self.is_comment or self.current_char == "#"):
+            if self.current_char == "#":
+                self.is_comment = True
+            if self.current_char == "\n":
+                self.is_comment = False
+            self._get_next_char()
 
     def _build_string(self):
         value = ""
@@ -106,7 +113,8 @@ class lexer:
         if self.current_char != "\"":
             while self.current_char == "\\" or (self.current_char != "\\" and self.next_char != "\""):
                 if self.current_char is None:
-                    raise missing_character_exception("Missing quote")
+                    logging.error(f"Missing quote at: {self.location}")
+                    raise Exception
                 value += self.current_char
                 self._get_next_char()
             value += self.current_char
@@ -117,7 +125,8 @@ class lexer:
         value = ""
         if self.current_char == "0":
             if self.next_char.isdigit():
-                raise parse_exception(f"No digits allowed after 0 at: {self.location}")
+                logging.error(f"No digits allowed after 0 in number at: {self.location}")
+                raise Exception
             return token(token_type.CONST, int(self.current_char), self.location)
         else:
             while self.next_char and self.next_char.isdigit():
@@ -129,7 +138,8 @@ class lexer:
             value += self.current_char
             self._get_next_char()
             if not self.current_char.isdigit():
-                raise parse_exception(f"Expected digit got: {self.current_char} at: {self.location}")
+                logging.error(f"Expected digit at: {self.location}")
+                raise Exception
             while self.next_char and self.next_char.isdigit():
                 value += self.current_char
                 self._get_next_char()

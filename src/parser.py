@@ -2,12 +2,13 @@ from __future__ import annotations
 from src.parser_types import *
 from src.lexer import lexer
 from src.data_structures import *
-from src.exceptions import syntax_exception
+import logging
 
 class parser:
     def __init__(self, token_source: lexer):
         self.token_source = token_source
         self.current_token = self.token_source.build_token()
+        logging.basicConfig(filename=f"./interpreter.log", level=logging.DEBUG)
 
     def __get_next_token(self) -> token:
         self.current_token = self.token_source.build_token()
@@ -22,7 +23,8 @@ class parser:
             elif s := self.__parse_statement():
                 statements.append(s)
             else:
-                raise syntax_exception("Expected statement or a function definition", loc = self.current_token.location)
+                logging.error(f"Expected statement or a function definition at: {self.current_token.location}")
+                raise Exception
         return program(definitions=definitions,statements=statements)
 
     def __parse_definition(self) -> definition:
@@ -34,21 +36,22 @@ class parser:
                     if (b := self.__parse_block()) != None:
                         return definition(name.location, name.value, b, p)
                     else:
-                        raise syntax_exception("Expected block", loc = self.current_token.location)
+                        logging.error(f"Expected block at: {self.current_token.location}")
+                        raise Exception
                 else:
-                    raise syntax_exception("Expected function parameters", loc = self.current_token.location)
+                    logging.error(f"Expected function parameters at: {self.current_token.location}")
+                    raise Exception
             else:
-                raise syntax_exception("Expected function identifier" ,loc = self.current_token.location)
+                logging.error(f"Expected function identifier at: {self.current_token.location}")
+                raise Exception
         else:
             return None
 
     def __parse_statement(self) -> statement:
         sign = None
         if (i := self.__parse_if()) != None:
-            #self.__get_next_token() # skip semicolon
             return i
-        elif w := self.__parse_while():
-            self.__get_next_token() # skip semicolon
+        elif (w := self.__parse_while()) != None:
             return w
         elif self.current_token.token_type == token_type.NEGATION:
             sign = "!"
@@ -58,16 +61,21 @@ class parser:
             self.__get_next_token()
             if not sign:
                 if a := self.__parse_assignment(name):
-                    self.__get_next_token() # skip semicolon
+                    if self.current_token.token_type != token_type.SEMICOLON:
+                        logging.error(f"Expected semicolon at: {self.current_token.location}")
+                        raise Exception
+                    self.__get_next_token()
                     return a
             if (f := self.__parse_function_call(name, sign)) != None:
                 if self.current_token.token_type == token_type.SEMICOLON:
-                    self.__get_next_token() # skip semicolon
+                    self.__get_next_token()
                     return f
                 else:
-                    raise syntax_exception("Expected semicolon", loc = self.current_token.location)
+                    logging.error(f"Expected semicolon at: {self.current_token.location}")
+                    raise Exception
             else:
-                raise syntax_exception("Expected assignment or function call", loc = self.current_token.location)
+                logging.error(f"Expected assignment or function call at: {self.current_token.location}")
+                raise Exception
         else:
             return None
 
@@ -85,14 +93,17 @@ class parser:
                     if v := self.__parse_logic_expression():
                         params.append(v)
                     else:
-                        raise syntax_exception("Expected function parameter", loc = self.current_token.location)
+                        logging.error(f"Expected function parameter at: {self.current_token.location}")
+                        raise Exception
                 if self.current_token.token_type == token_type.CLOSE_BRACKER:
                     self.__get_next_token()
                     return params
                 else:
-                    raise syntax_exception("Expected closing bracket", loc = self.current_token.location)
+                    logging.error(f"Expected closing bracket at: {self.current_token.location}")
+                    raise Exception
             else:
-                raise syntax_exception("Expected function parameter", loc = self.current_token.location)
+                logging.error(f"Expected function parameter at: {self.current_token.location}")
+                raise Exception
         else:
             return None
 
@@ -114,14 +125,17 @@ class parser:
                         self.__get_next_token()
                         params.append(v)
                     else:
-                        raise syntax_exception("Expected function argument", loc = self.current_token.location)
+                        logging.error(f"Expected function argument at: {self.current_token.location}")
+                        raise Exception
                 if self.current_token.token_type == token_type.CLOSE_BRACKER:
                     self.__get_next_token()
                     return params
                 else:
-                    raise syntax_exception("Expected closing bracket", loc = self.current_token.location)
+                    logging.error(f"Expected closing bracket at: {self.current_token.location}")
+                    raise Exception
             else:
-                raise syntax_exception("Expected function parameter", loc = self.current_token.location)
+                logging.error(f"Expected function parameter at: {self.current_token.location}")
+                raise Exception
         else:
             return None
 
@@ -140,11 +154,11 @@ class parser:
                     self.__get_next_token()
                     return block(location, statements)
                 else:
-                    raise syntax_exception("Expected closing block", loc = self.current_token.location)    
-                #self.__get_next_token()
-                #return block(location, statements)
+                    logging.error(f"Expected closing block at: {self.current_token.location}")
+                    raise Exception
             else:
-                raise syntax_exception("Expected statement", loc = self.current_token.location)    
+                logging.error(f"Expected statement at: {self.current_token.location}")
+                raise Exception   
         else:
             return None
 
@@ -161,17 +175,22 @@ class parser:
                                 if (f := self.__parse_block()) != None:
                                     return if_statement(self.current_token.location, l, t, f)
                                 else:
-                                    raise syntax_exception("Expected block", loc = self.current_token.location)    
+                                    logging.error(f"Expected block at: {self.current_token.location}")
+                                    raise Exception   
                             else:
                                 return if_statement(self.current_token.location, l, t)
                         else:
-                            raise syntax_exception("Expected block", loc = self.current_token.location)    
+                            logging.error(f"Expected block at: {self.current_token.location}")
+                            raise Exception
                     else:
-                        raise syntax_exception("Expected closing bracket", loc = self.current_token.location)    
+                        logging.error(f"Expected closing bracket at: {self.current_token.location}")
+                        raise Exception   
                 else:
-                    raise syntax_exception("Expected logic expression", loc = self.current_token.location)    
+                    logging.error(f"Expected logic expression at: {self.current_token.location}")
+                    raise Exception   
             else:
-                raise syntax_exception("Expected opening bracket", loc = self.current_token.location)    
+                logging.error(f"Expected opening bracket at: {self.current_token.location}")
+                raise Exception  
         else:
             return None
 
@@ -185,13 +204,17 @@ class parser:
                         if (t := self.__parse_block()) != None:
                             return while_statement(self.current_token.location,l, t)
                         else:
-                            raise syntax_exception("Expected block", loc = self.current_token.location)    
+                            logging.error(f"Expected block at: {self.current_token.location}")
+                            raise Exception 
                     else:
-                        raise syntax_exception("Expected closing bracket", loc = self.current_token.location)    
+                        logging.error(f"Expected closing bracket at: {self.current_token.location}")
+                        raise Exception   
                 else:
-                    raise syntax_exception("Expected logic expression", loc = self.current_token.location)    
+                    logging.error(f"Expected logic expression at: {self.current_token.location}")
+                    raise Exception  
             else:
-                raise syntax_exception("Expected opening bracket", loc = self.current_token.location)    
+                logging.error(f"Expected opening bracket at: {self.current_token.location}")
+                raise Exception   
         else:
             return None
 
@@ -201,7 +224,8 @@ class parser:
             if l := self.__parse_logic_expression():
                 return assignment(self.current_token, name.value, l)
             else:
-                raise syntax_exception("Expected logic expression", loc = self.current_token.location)    
+                logging.error(f"Expected logic expression at: {self.current_token.location}")
+                raise Exception  
         else:
             return None
 
@@ -228,7 +252,8 @@ class parser:
             self.__get_next_token()
             if (f := self.__parse_function_call(name, sign)) != None:
                 if sign and sign != '!':
-                    raise Exception("Function call can only have \'!\' sign")
+                    logging.error(f"Function call can only have \'!\' sign at: {self.current_token.location}")
+                    raise Exception
                 return f
             else:
                 return temp
@@ -236,13 +261,15 @@ class parser:
             temp = string(self.current_token.location, self.current_token.value)
             self.__get_next_token()
             if sign:
-                raise Exception("String cannot have any sign")
+                logging.error(f"String cannot have any sign at: {self.current_token.location}")
+                raise Exception
             return temp
         elif self.current_token.token_type == token_type.CONST:
             temp = number(self.current_token.location, self.current_token.value, sign)
             self.__get_next_token()
             if sign and sign == "!":
-                raise Exception("Number cannot have \'!\' sign")
+                logging.error(f"Number cannot have \'!\' sign at: {self.current_token.location}")
+                raise Exception
             return temp
         else:
             return None
@@ -262,7 +289,8 @@ class parser:
                     conditions.append(c)
                     operators.append(o)
                 else:
-                    raise syntax_exception("Expected codnition", loc = self.current_token.location)
+                    logging.error(f"Expected codnition at: {self.current_token.location}")
+                    raise Exception
             return logic_expression(location, operators=operators, values=conditions)
         else:
             return None
@@ -282,7 +310,8 @@ class parser:
                     relations.append(r)
                     operators.append(o)
                 else:
-                    raise syntax_exception("Expected relation", loc = self.current_token.location)
+                    logging.error(f"Expected relation at: {self.current_token.location}")
+                    raise Exception
             return condition(location, operators=operators, values=relations)
         else:
             None
@@ -301,7 +330,8 @@ class parser:
                     operators.append(o)
                     return relation(location, operators=operators, values=math_expressions)
                 else:
-                    raise syntax_exception("Expected math expression", loc = self.current_token.location)
+                    logging.error(f"Expected math expression at: {self.current_token.location}")
+                    raise Exception
             else:
                 return m
         else:
@@ -322,7 +352,8 @@ class parser:
                     factors.append(f)
                     operators.append(o)
                 else:
-                    raise syntax_exception("Expected factor", loc = self.current_token.location)
+                    logging.error(f"Expected factor at: {self.current_token.location}")
+                    raise Exception
             return math_expression(location, operators=operators, values=factors)
         else:
             None
@@ -342,7 +373,8 @@ class parser:
                     values.append(v)
                     operators.append(o)
                 else:
-                    raise syntax_exception("Expected logic_expression", loc = self.current_token.location)
+                    logging.error(f"Expected logic expression at: {self.current_token.location}")
+                    raise Exception
             return factor(location, operators=operators, values=values)
         else:
             None
@@ -355,11 +387,14 @@ class parser:
                     self.__get_next_token()
                     return e
                 else:
-                    raise Exception("Expected closing bracket")
+                    logging.error(f"Expected closing bracket at: {self.current_token.location}")
+                    raise Exception
             else:
-                raise Exception("Expected logic_expression")
+                logging.error(f"Expected logic expression at: {self.current_token.location}")
+                raise Exception
         else:
             if f := self.__parse_value():
                 return f
             else:
-                raise Exception("Expectred value")
+                logging.error(f"Expected value at: {self.current_token.location}")
+                raise Exception

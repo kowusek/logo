@@ -8,7 +8,6 @@ from src.parser import parser
 from src.get_input import get_input
 from src.data_structures import token, token_type, location
 from src.parser_types import *
-from src.exceptions import syntax_exception
 from src.visitor import interpreter_visitor
 from src.draw.window_renderer import *
 
@@ -181,7 +180,7 @@ def test_bool():
     assert v.current_context.variables['z'] == True
 
 def test_logical_expressions():
-    s = string_buffer('x=True||False;y=True&&False;z=True&&True')
+    s = string_buffer('x=True||False;y=True&&False;z=True&&True;')
     l = lexer(s)
     p = parser(l)
     program = p.parse_program()
