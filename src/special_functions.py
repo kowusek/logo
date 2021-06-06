@@ -2,6 +2,7 @@ from src.context import *
 from src.parser_types import *
 from src.visitor import *
 from src.draw.canvas import *
+import logging
 
 def _return(visitor:visitor, canv: TurtlePaths, value: value=None):
     if value:
@@ -9,7 +10,11 @@ def _return(visitor:visitor, canv: TurtlePaths, value: value=None):
     visitor.is_return = True
 
 def _print(visitor:visitor, canv: TurtlePaths, *args):
-    print(*args)
+    s = str()
+    for arg in args:
+        s += str(arg)
+        s += " "
+    logging.info(f"{s}")
 
 def _forward(visitor:visitor, canv: TurtlePaths, value: int):
     if canv:
