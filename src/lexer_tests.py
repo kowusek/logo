@@ -1,7 +1,9 @@
 import pytest
-from .lexer import lexer
-from .get_input import get_input
-from .data_structures import token, token_type, location
+import sys
+sys.path.append('.')
+from src.lexer import lexer
+from src.get_input import get_input
+from src.data_structures import token_type
 
 class string_buffer(get_input):
     def __init__(self, string):

@@ -4,10 +4,10 @@ sys.path.append('./src/')
 sys.path.append('.')
 sys.path.append('./draw/')
 from src.lexer import lexer
-from src.last_parser import parser
+from src.parser import parser
 from src.get_input import get_input
 from src.data_structures import token, token_type, location
-from src.last_parser_types import *
+from src.parser_types import *
 from src.exceptions import syntax_exception
 from src.visitor import interpreter_visitor
 from src.draw.window_renderer import *

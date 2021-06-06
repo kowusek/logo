@@ -46,17 +46,6 @@ class lexer:
             "if" : token_type.IF,
             "while" : token_type.WHILE,
             "else" : token_type.ELSE,
-#            "elif" : token_type.ELIF,
-#            "return" : token_type.RETURN,
-#            "print" : token_type.PRINT,
-#            "marker_up" : token_type.MARKER_UP,
-#            "marker_down" : token_type.MARKER_DOWN,
-#            "forward" : token_type.FORWARD,
-#            "backward" : token_type.BACKWARD,
-#            "left" : token_type.LEFT,
-#            "right" : token_type.RIGHT,
-#            "set_pos" : token_type.SET_POS,
-#            "set_color" : token_type.SET_COLOR,
         }
 
     def _get_next_char(self):

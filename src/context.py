@@ -40,7 +40,6 @@ class context:
         if self.parent:
             return self.parent.get_root_context()
 
-
 class root_context(context):
     def __init__(self, definition_list=[]):
         super().__init__(definition_list)

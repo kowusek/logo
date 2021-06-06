@@ -1,8 +1,7 @@
 from __future__ import annotations
-from src.last_parser_types import *
+from src.parser_types import *
 from src.lexer import lexer
 from src.data_structures import *
-from src.last_parser_types import *
 from src.exceptions import syntax_exception
 
 class parser:

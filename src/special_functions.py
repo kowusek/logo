@@ -1,9 +1,7 @@
 from src.context import *
-from src.draw import canvas
-from src.last_parser_types import *
+from src.parser_types import *
 from src.visitor import *
 from src.draw.canvas import *
-from src.draw import *
 
 def _return(visitor:visitor, canv: TurtlePaths, value: value=None):
     if value:

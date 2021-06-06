@@ -1,6 +1,6 @@
 from src.get_input import get_input
 from src.lexer import lexer
-from src.last_parser import parser
+from src.parser import parser
 from src.visitor import interpreter_visitor
 
 if __name__ == "__main__":

@@ -1,3 +1,5 @@
+from src.data_structures import location
+
 class get_input:
     def __init__(self, file_path):
         self.file_path = file_path
@@ -18,4 +20,4 @@ class get_input:
         return next(self.gen)
 
     def get_location(self) -> int and int:
-        return self.line_count, self.position_in_line
+        return location(self.line_count, self.position_in_line)
