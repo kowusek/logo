@@ -1,0 +1,42 @@
+program  =  { statement | definition };
+definition = "def" identifier, parameters, block;
+parameters = "(", [ identifier, { ",", identifier } ], ")";
+statement = if_statement | while_statement | function | assignment;
+
+
+if_statement = "if", "(", logic_expression, ")", block, [ "else", block ];
+while_statement = "while", "(", logic_expression, ")", block;
+block = "{", { statement }, "}";
+assignment = identifier, "=", logic_expression;
+
+
+logic_expression = condition, { "||", condition };
+condition = relation, { "&&", relation };
+relation = math_expression, [ comp_sign, math_expression ];
+math_expression = factor, { add_sign, factor };
+factor = logic_factor, { mult_sign, logic_factor };
+logic_factor = value | "(" logic_expression ")";
+value = [ "!" | add_sign ], ( identifier | function | number | string );
+
+
+function = identifier, function_arguments;
+function_arguments = "(" [ logic_expression, { ",", logic_expression } ], ")";
+
+
+add_sign = "+" | "-";
+mult_sign = "*" | "/";
+logic_sign = "||" | "&&";
+comp_sign = "==" | "!=" | "<" | "<=" | ">" | ">=";
+
+
+identifier = letter, {natural_number | letter | special_sign};
+string = '"' {letter | natural_number | special_sign | string_escaped_sign} '"';
+number = natural_number [ ".", digit, {digit}];
+natural_number = "0" | (non_zero_digit, {digit});
+
+
+letter = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" ;
+digit = "0" | non_zero_digit;
+non_zero_digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+special_sign = "_";
+string_escape_sign = '//';
