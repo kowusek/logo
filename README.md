@@ -99,6 +99,10 @@ def snowflake(lengthSide, levels) {
 snowflake(400,5);
 ```
 
+Wynik działania:
+
+![Przykładowy obraz](example_output.jpg)
+
 ## Gramatyka
 
 ```
